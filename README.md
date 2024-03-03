@@ -15,7 +15,7 @@ Provided that the code is served by a Server supporting PHP files,
 open public/index.php in a browser, explore the code and see the 
 execution results.  
 
-### Docker usage (NOT YET IMPLEMENTED)
+### Use with Docker
 
 To run the demos in a Docker container, use the following commands:
 

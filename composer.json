@@ -9,6 +9,6 @@
     ],
     "require": {
         "php": ">=8.2",
-        "kapitancho/walnut-lang-cli-adapter": "^0.0.1"
+        "kapitancho/walnut-lang-cli-adapter": "^0.0.2"
 	}
 }
