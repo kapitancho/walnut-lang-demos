@@ -20,8 +20,31 @@ execution results.
 To run the demos in a Docker container, use the following commands:
 
 ```bash
-$ docker build -t walnut-lang-demos .
-$ docker run -p 8080:80 walnut-lang-demos
+$ docker compose build
+$ docker compose up -d
 ```
 
-Then open http://localhost:8080 in a browser.
+Then open http://localhost:8068/public/ in a browser.
+
+### Some notable demos
+
+- [Fibonacci](http://localhost:8068/public/?src=cast35&autoexec=1)
+- [Fizz Buzz - 3 versions](http://localhost:8068/public/?src=cast211&autoexec=1)
+- [Books in a Library](http://localhost:8068/public/?src=cast34&autoexec=1)
+- [Hydration](http://localhost:8068/public/?src=cast27&autoexec=1)
+- [Members model](http://localhost:8068/public/?src=cast37&autoexec=1)
+- [Using a database](http://localhost:8068/public/?src=cast23&autoexec=1)
+- [Interface-like casts](http://localhost:8068/public/?src=cast14&autoexec=1)
+- [JSON](http://localhost:8068/public/?src=cast12&autoexec=1)
+- [Subtypes](http://localhost:8068/public/?src=cast11&autoexec=1)
+
+### Methods showcases
+
+- [String methods showcase](http://localhost:8068/public/?src=demo-string&autoexec=1)
+- [Integer methods showcase](http://localhost:8068/public/?src=demo-integer&autoexec=1)
+- [Real methods showcase](http://localhost:8068/public/?src=demo-real&autoexec=1)
+- [Array methods showcase](http://localhost:8068/public/?src=demo-array&autoexec=1)
+- [Map methods showcase](http://localhost:8068/public/?src=demo-map&autoexec=1)
+- [Mutable methods showcase](http://localhost:8068/public/?src=demo-mutable&autoexec=1)
+- [Type methods showcase](http://localhost:8068/public/?src=demo-type&autoexec=1)
+- [Boolean methods showcase](http://localhost:8068/public/?src=demo-boolean&autoexec=1)

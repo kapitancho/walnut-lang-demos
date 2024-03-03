@@ -7,7 +7,7 @@ fn1 = ^JsonValue => String :: {
     #->jsonStringify
 };
 
-fn2 = ^String => Result<JsonValue, InvalidJsonValue> :: {
+fn2 = ^String => Result<JsonValue, InvalidJsonString    > :: {
     #->jsonDecode
 };
 
