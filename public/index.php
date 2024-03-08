@@ -54,7 +54,7 @@ try {
 
 	foreach(array_slice(array_reverse($tokens), 1) as $token) {
 		$sourceCode = substr_replace($sourceCode, '<strong title="' . $token->rule->tag . '">' .
-			$token->patternMatch->text . '</strong>', $token->sourcePosition->offset, strlen($token->patternMatch->text));
+			htmlspecialchars($token->patternMatch->text) . '</strong>', $token->sourcePosition->offset, strlen($token->patternMatch->text));
 	}
 	if (!$isRun) { include __DIR__ . '/code.tpl.php'; }
 
@@ -64,7 +64,7 @@ try {
 
 	foreach(array_reverse(array_slice($tokens, 0, $e->state->i)) as $token) {
 		$sourceCode = substr_replace($sourceCode, '<strong title="' . $token->rule->tag . '">' .
-			$token->patternMatch->text . '</strong>', $token->sourcePosition->offset, strlen($token->patternMatch->text));
+			htmlspecialchars($token->patternMatch->text) . '</strong>', $token->sourcePosition->offset, strlen($token->patternMatch->text));
 	}
 	if (!$isRun) {
 		ob_start();
