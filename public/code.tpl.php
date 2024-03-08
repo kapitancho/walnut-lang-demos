@@ -50,7 +50,7 @@
 			<?php foreach($sources as $sourceF) { ?>
 				<?php if ($source === $sourceF) { ?>
 					<em><?= $sourceF ?></em>
-					<?php if (preg_match('/^(cast\d+|demo-\w+)$/', $sourceF)) { ?>
+					<?php if (preg_match('/^(cast\d+|demo-\w+|lang-[\w\-]+)$/', $sourceF)) { ?>
 						<!--<a target="run" style="color: fuchsia" href="exec.php?r=1&src=<?= $sourceF ?><?= $qs ?>">[execute]</a>-->
 						<input type="text" value="<?= $qs ?>" />
 						<a target="run" style="color: fuchsia" data-href="index.php?run=1&src=<?= $sourceF ?>"
