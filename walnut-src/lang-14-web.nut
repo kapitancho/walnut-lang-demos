@@ -1,20 +1,20 @@
 module lang-14-web %% http-core, http-middleware, generic-http:
 /* A Walnut-Lang implementation of https://github.com/gabrieldim/Go-Crash-Course/blob/main/14_web/main.go */
 
-Index = ^HttpRequest => HttpResponse;
-==> Index %% [~CreateHttpResponse] :: ^HttpRequest => HttpResponse :: {
+IndexHandler = :[];
+IndexHandler ==> HttpRequestHandler %% [~CreateHttpResponse] :: ^[request: HttpRequest] => Result<HttpResponse, Any> :: {
     %.createHttpResponse(200)->withBody('<h1>Hello world</h1>')
 };
 
-About = ^HttpRequest => HttpResponse;
-==> About %% [~CreateHttpResponse] :: ^HttpRequest => HttpResponse :: {
+AboutHandler = :[];
+AboutHandler ==> HttpRequestHandler %% [~CreateHttpResponse] :: ^[request: HttpRequest] => Result<HttpResponse, Any> :: {
     %.createHttpResponse(200)->withBody('<h1>About</h1>')
 };
 
 /* The next two should be in a separate file */
 ==> LookupRouterMapping :: [
-    [path: '/about', type: type{About}],
-    [path: '/', type: type{Index}]
+    [path: '/about', type: type{AboutHandler}],
+    [path: '/', type: type{IndexHandler}]
 ];
 
 ==> CompositeHandler %% [
