@@ -26,6 +26,11 @@ $ docker compose up -d
 
 Then open http://localhost:8068/public/ in a browser.
 
+### Introduction to Walnut-Lang
+- [Custom types](http://localhost:8068/public/?src=lang-type-system&autoexec=1)
+- [Casts, hydration, JSON](http://localhost:8068/public/?src=lang-cast-hydrate-json&autoexec=1)
+
+
 ### Some notable demos
 
 - [Fibonacci](http://localhost:8068/public/?src=cast35&autoexec=1)
