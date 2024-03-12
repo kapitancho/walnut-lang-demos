@@ -27,6 +27,11 @@ PointB->moveHorizontally(^Real => PointB) :: PointB[x: $.x + #, y: $.y];
 PointA->moveHorizontally(^Real => PointA) :: [x: $.x + #, y: $.y];
 PointC->moveHorizontally(^Real => PointC) :: PointC[x: $.x + #, y: $.y];
 
+/* cast to another type, $ is similar to 'this' in other languages */
+PointB ==> String :: ['(', $.x->asString, ', ', $.y->asString, ')']->combineAsString('');
+PointA ==> String :: ['(', $.x->asString, ', ', $.y->asString, ')']->combineAsString('');
+PointC ==> String :: ['(', $.x->asString, ', ', $.y->asString, ')']->combineAsString('');
+
 /* subtype specialty 1 - subtyping basic types like Integer, Real, Boolean, String, etc. */
 UuidString <: String<36..36>;
 /* subtype specialty 2 - "Value Object"-like behavior */
@@ -40,7 +45,7 @@ MyStateType([x: Real, y: Real]) :: [x: #.x->asInteger, y: #.y->asInteger];
 main = ^Array<String> => String :: [
     pointAx: accessPointA(newPointA(null)->moveHorizontally(1)),
     pointB: accessPointB(newPointB(null)->moveHorizontally(1.5)),
-    pointC: newPointC(null)->moveHorizontally(2),
+    pointC: newPointC(null)->moveHorizontally(2)->asString,
     validRange: MyRange[min: 1, max: 10],
     invalidRange: MyRange[min: 10, max: 1],
     uuid: UuidString('123e4567-e89b-12d3-a456-426614174000'),
@@ -51,7 +56,7 @@ main = ^Array<String> => String :: [
 Result: [
     pointAx: 4.14,
     pointB: 4.64,
-    pointC: PointC[x: 5.14, y: -2],
+    pointC: (5.14, -2),
     validRange: MyRange[min: 1, max: 10],
     invalidRange: @'Invalid Range',
     uuid: UuidString{'123e4567-e89b-12d3-a456-426614174000'},
