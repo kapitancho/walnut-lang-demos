@@ -32,7 +32,7 @@ asReal         = ^String<1..15>                                 => Result<Real, 
 asBoolean      = ^String<..15>                                  => Boolean                                      :: #->asBoolean;
 valueType      = ^String<1..15>                                 => Type<String<1..15>>                          :: #->type;
 isOfType       = ^[String<1..15>, Type]                         => Boolean                                      :: #.0->isOfType(#.1);
-jsonDecode     = ^String<1..15>                                 => Result<JsonValue, InvalidJsonValue>          :: #->jsonDecode;
+jsonDecode     = ^String<1..15>                                 => Result<JsonValue, InvalidJsonString>         :: #->jsonDecode;
 jsonStringify  = ^String<1..15>                                 => String                                       :: #->jsonStringify;
 
 test = ^[a: String<3..10>, b: String<..5>, c: String['a', 'hello'], d: String<1..10>, e: String<2..2>, f: MyString] => Map :: [

@@ -21,7 +21,7 @@ Product ==> Map :: {
     [productId: $.productId, productName: $.productName]
 };
 
-getData = ^DatabaseConnector => Result<Array<Map<String|Integer|Null>>, MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+getData = ^DatabaseConnector => Result<Array<Map<String|Integer|Null>>, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
     data = ?noError(#->query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []]);
     data->map(mapToProduct)
 };
@@ -33,32 +33,32 @@ mapToProduct = ^Map => Result<Product, MapItemNotFound|CastNotAvailable> :: {
     ]
 };
 
-getDataX = ^DatabaseConnector => Result<Array<Product>, MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+getDataX = ^DatabaseConnector => Result<Array<Product>, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
     data = ?noError(#->query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []]);
     data->map(mapToProductX)
 };
 
-mapToProductX = ^Map => Result<Product, MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+mapToProductX = ^Map => Result<Product, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
     #->as(type{Product})
 };
 
-getDataY = ^[~DatabaseConnector, targetType: Type] => Result<Array, MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+getDataY = ^[~DatabaseConnector, targetType: Type] => Result<Array, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
     data = ?noError(#.databaseConnector->query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []]);
     data->map(mapToProductY[#.targetType])
 };
 
-MapX = ^Map => Result<Any, MapItemNotFound|CastNotAvailable|DatabaseQueryFailure>;
+MapX = ^Map => Result<Any, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure>;
 
 mapToProductY = ^[targetType: Type] => MapX :: {
     targetType = #.targetType;
-    ^Map => Result<Any, MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+    ^Map => Result<Any, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
         #->as(targetType)
     }
 };
 
 ProductArray = Array<Product>;
 
-getDataZ = ^[~DatabaseConnector] => Result<Array, MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+getDataZ = ^[~DatabaseConnector] => Result<Array, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
     c = getDataY[#.databaseConnector, type{Product}];
     c->as(type{ProductArray})
 };

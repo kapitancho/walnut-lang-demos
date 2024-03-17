@@ -93,8 +93,9 @@ InMemoryKeyValueStorage ==> KeyValueStorage :: [
     getByKey: ^[key: String] => Result<Map, KeyNotFound> :: {
         item = $.storage->value->item(#.key);
         ?whenTypeOf(item) is {
+            type{Map}: item,
             type{Result<Nothing, MapItemNotFound>}: => Error(KeyNotFound[#.key]),
-            type{Map}: item
+            ~: Error(KeyNotFound['unknown-key'])
         }
     },
     storeByKey: ^[key: String, value: Map] => ValueAdded|ValueReplaced :: {
