@@ -47,10 +47,12 @@
 	<body>
 		<header>
 			<h4>Select file:</h4>
-			<?php foreach($sources as $sourceF) { ?>
+			<?php foreach($sources as $sourceF) {
+				$isExecutable = preg_match('/^(cast\d+|demo-\w+|lang-[\w\-]+)$/', $sourceF);
+			?>
 				<?php if ($source === $sourceF) { ?>
 					<em><?= $sourceF ?></em>
-					<?php if (preg_match('/^(cast\d+|demo-\w+|lang-[\w\-]+)$/', $sourceF)) { ?>
+					<?php if ($isExecutable) { ?>
 						<!--<a target="run" style="color: fuchsia" href="exec.php?r=1&src=<?= $sourceF ?><?= $qs ?>">[execute]</a>-->
 						<input type="text" value="<?= $qs ?>" />
 						<a target="run" style="color: fuchsia" data-href="index.php?run=1&src=<?= $sourceF ?>"
@@ -59,7 +61,7 @@
 						>[execute]</a>
 					<?php } ?>
 				<?php } else { ?>
-					<a href="?src=<?= $sourceF ?>"><?= $sourceF ?></a>
+					<a href="?src=<?= $sourceF ?><?= $isExecutable ? '&autoexec=1' : '' ?>"><?= $sourceF ?></a>
 				<?php } ?>
 			<?php } ?>
 		</header>

@@ -11,7 +11,7 @@ JsonRequestBody->toParameter(^HttpRequest => Result<Map<JsonValue>, InvalidJsonS
         type{String}: body,
         ~: ''
     };
-    value = ?noError(body->jsonDecode);
+    value = body=>jsonDecode;
     ?whenTypeOf(value) is {
         type{Result<Nothing, InvalidJsonString>}: value,
         type{JsonValue}: [:]->withKeyValue[key: $.valueKey, value: value]
@@ -28,7 +28,7 @@ NoResponseBody->fromParameter(^Any => HttpResponse) :: [
 
 RedirectResponseBody = $[statusCode: HttpStatusCode];
 RedirectResponseBody->fromParameter(^Any => Result<HttpResponse, Any>) :: {
-    redirectValue = ?noError(#->as(type{String}));
+    redirectValue = #=>as(type{String});
     [
          statusCode: $.statusCode,
          protocolVersion: HttpProtocolVersion.HTTP11,
@@ -85,16 +85,16 @@ HttpRoute->handleRequest(^HttpRequest => Result<HttpResponse, HttpRouteDoesNotMa
                 matchResult = $.pattern->matchAgainst(request.requestTarget);
                 ?whenTypeOf(matchResult) is {
                     type{Map<String|Integer<0..>>}: {
-                        bodyArg = ?noError($.requestBody->toParameter(request));
+                        bodyArg = $.requestBody=>toParameter(request);
                         callParams = matchResult->mergeWith(bodyArg);
                         callParams = callParams->asJsonValue;
                         handlerType = $.handler;
                         handlerParameterType = handlerType->parameterType;
                         handlerReturnType = handlerType->returnType;
-                        handlerParams = ?noError(callParams->hydrateAs(handlerParameterType));
-                        handlerInstance = ?noError(%->valueOf(handlerType));
+                        handlerParams = callParams=>hydrateAs(handlerParameterType);
+                        handlerInstance = %=>valueOf(handlerType);
                         handlerResult = ?noError(handlerInstance(handlerParams));
-                        ?noError($.response->fromParameter(handlerResult))
+                        $.response=>fromParameter(handlerResult)
                     },
                     ~: Error(HttpRouteDoesNotMatch[])
                 }
@@ -149,6 +149,14 @@ httpPostJsonLocation = ^[pattern: RoutePattern, handler: Type<^Nothing => Any>, 
         response: RedirectResponseBody[201]
     ]
 };
+
+httpPost = ^[pattern: RoutePattern, handler: Type<^Nothing => Any>] => HttpRoute :: HttpRoute[
+    method: HttpRequestMethod.POST,
+    pattern: #.pattern,
+    requestBody: EmptyRequestBody[],
+    handler: #.handler,
+    response: NoResponseBody[204]
+];
 
 httpPostJson = ^[pattern: RoutePattern, handler: Type<^Nothing => Any>, bodyArgName: String<1..>] => HttpRoute :: HttpRoute[
     method: HttpRequestMethod.POST,

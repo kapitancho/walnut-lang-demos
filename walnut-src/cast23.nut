@@ -28,13 +28,13 @@ getData = ^DatabaseConnector => Result<Array<Map<String|Integer|Null>>, MapItemN
 
 mapToProduct = ^Map => Result<Product, MapItemNotFound|CastNotAvailable> :: {
     Product[
-        ?noError(?noError(#->item('id'))->as(type{ProductId})),
-        ?noError(?noError(#->item('name'))->as(type{ProductName}))
+        #=>item('id')=>as(type{ProductId}),
+        #=>item('name')=>as(type{ProductName})
     ]
 };
 
 getDataX = ^DatabaseConnector => Result<Array<Product>, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
-    data = ?noError(#->query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []]);
+    data = #=>query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []];
     data->map(mapToProductX)
 };
 
@@ -43,7 +43,7 @@ mapToProductX = ^Map => Result<Product, MapItemNotFound|CastNotAvailable|Invalid
 };
 
 getDataY = ^[~DatabaseConnector, targetType: Type] => Result<Array, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
-    data = ?noError(#.databaseConnector->query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []]);
+    data = #.databaseConnector=>query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []];
     data->map(mapToProductY[#.targetType])
 };
 
@@ -64,14 +64,14 @@ getDataZ = ^[~DatabaseConnector] => Result<Array, MapItemNotFound|CastNotAvailab
 };
 
 getRow = ^DatabaseConnector => Result<Map<String|Integer|Null>, IndexOutOfRange|MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
-    data = ?noError(#->query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []]);
-    row = ?noError(data->item(0));
+    data = #=>query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []];
+    row = data=>item(0);
     mapToProduct(row)
 };
 
 getRowE = ^DatabaseConnector => Result<Map<String|Integer|Null>, IndexOutOfRange|MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
-    data = ?noError(#->query[query: 'SELECT id, name FOM cast4 limit 3', boundParameters: []]);
-    row = ?noError(data->item(0));
+    data = #=>query[query: 'SELECT id, name FOM cast4 limit 3', boundParameters: []];
+    row = data=>item(0);
     mapToProduct(row)
 };
 
@@ -93,13 +93,13 @@ myFn = ^Array<Any> => Any :: {
     ]
 };
 Any ==> ProductName @ InvalidProductName|CastNotAvailable :: {
-    x = ?noError($->as(type{String}));
+    x = $=>as(type{String});
     ?whenTypeOf(x) is { type{ProductName}: x, ~: Error(InvalidProductName[x]) }
 };
 Map ==> Product @ MapItemNotFound|InvalidProductName|CastNotAvailable :: {
     Product[
-        ?noError(?noError($->item('id'))->as(type{ProductId})),
-        ?noError(?noError($->item('name'))->as(type{ProductName}))
+        $=>item('id')=>as(type{ProductId}),
+        $=>item('name')=>as(type{ProductName})
     ]
 };
 main = ^Array<String> => String :: {

@@ -34,6 +34,14 @@
 						</div>
 					</div>
 				</details>
+				<details>
+					<summary>AST</summary>
+					<div id="value">
+						<div id="source">
+<?= htmlspecialchars(json_encode($pb, JSON_PRETTY_PRINT)) ?>
+						</div>
+					</div>
+				</details>
 			<?php } ?>
 		</main>
 	</body>

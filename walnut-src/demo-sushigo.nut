@@ -112,48 +112,48 @@ PlayersCards->scoreByPlayer(^Null => Map<Integer<0..>>) :: {
 PlayersCards->withRemovedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, MapItemNotFound|ItemNotFound>) :: {
     cards = $.cards;
     playerMoves = #;
-    cards = ?noError(cards->mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
+    cards = cards=>mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
         playerCards = #.value;
-        playerMove = ?noError(playerMoves->item(#.key));
+        playerMove = playerMoves=>item(#.key);
         chosenCard = playerMove.chosenCard;
         chopsticksExchange = playerMove.chopsticksExchange;
-        cards = ?noError(playerCards->without(chosenCard));
+        cards = playerCards=>without(chosenCard);
         cards = ?whenTypeOf(chopsticksExchange) is {
-            type{SushiGoCard}: ?noError(cards->without(chopsticksExchange))->insertLast(SushiGoCard.Chopsticks),
+            type{SushiGoCard}: cards=>without(chopsticksExchange)->insertLast(SushiGoCard.Chopsticks),
             ~: cards
         }
-    }));
+    });
     PlayersCards[cards: cards]
 };
 PlayersCards->withAddedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, MapItemNotFound|ItemNotFound>) :: {
     cards = $.cards;
     playerMoves = #;
-    cards = ?noError(cards->mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
+    cards = cards=>mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
         playerCards = #.value;
-        playerMove = ?noError(playerMoves->item(#.key));
+        playerMove = playerMoves=>item(#.key);
         chosenCard = playerMove.chosenCard;
         chopsticksExchange = playerMove.chopsticksExchange;
         cards = playerCards->insertLast(chosenCard);
         cards = ?whenTypeOf(chopsticksExchange) is {
-            /*type{SushiGoCard}: ?noError(cards->without(SushiGoCard.Chopsticks))->insertLast(chopsticksExchange),*/
-            type{SushiGoCard}: ?noError(cards->insertLast(chopsticksExchange)->without(SushiGoCard.Chopsticks)),
+            /*type{SushiGoCard}: cards=>without(SushiGoCard.Chopsticks)->insertLast(chopsticksExchange),*/
+            type{SushiGoCard}: cards=>insertLast(chopsticksExchange)->without(SushiGoCard.Chopsticks),
             ~: cards
         }
-    }));
+    });
     PlayersCards[cards: cards]
 };
 PlayersCards->passedToTheNextPlayer(^PlayerList => Result<PlayersCards, IndexOutOfRange|MapItemNotFound>) :: {
     playerList = #->players;
     cards = $.cards;
-    cards = ?noError(playerList->mapIndexValue(^[index: Integer<0..>, value: PlayerName] => Result<PlayerCards, IndexOutOfRange|MapItemNotFound> :: {
+    cards = playerList=>mapIndexValue(^[index: Integer<0..>, value: PlayerName] => Result<PlayerCards, IndexOutOfRange|MapItemNotFound> :: {
         nextIndex = {#.index + 1} % playerList->length;
-        cards->item(?noError(playerList->item(nextIndex)))
+        cards->item(playerList=>item(nextIndex))
         /*
         nextPlayer = playerList->item(nextIndex);
-        cards = ?noError(cards->insertLast(cards->item(value))->without(value));
-        cards = ?noError(cards->insertLast(cards->item(nextPlayer))->without(nextPlayer))*/
-    }));
-    cards = ?noError(playerList->flip->map(^Integer => Result<Array<SushiGoCard>, IndexOutOfRange> :: ?noError(cards->item(#))));
+        cards = cards=>insertLast(cards->item(value))->without(value);
+        cards = cards->insertLast(cards->item(nextPlayer))->without(nextPlayer)*/
+    });
+    cards = playerList->flip=>map(^Integer => Result<Array<SushiGoCard>, IndexOutOfRange> :: cards=>item(#));
     PlayersCards[cards: cards]
 };
 PlayersCards->puddingsCountByPlayer(^Null => Map<Integer<0..>>) :: $.cards->map(^PlayerCards => Integer<0..> :: #->puddingsCount);
@@ -165,11 +165,8 @@ ActiveRound->applyPlayerMoves(^Map<PlayerMove> => Result<ActiveRound, MapItemNot
     hiddenCards = $.hiddenCards;
     playerMoves = #;
     ActiveRound[playerList,
-        ?noError(openCards->withAddedByPlayerMoves(playerMoves)),
-        ?noError(
-            ?noError(hiddenCards->withRemovedByPlayerMoves(playerMoves))
-            ->passedToTheNextPlayer(playerList)
-        )
+        openCards=>withAddedByPlayerMoves(playerMoves),
+        hiddenCards=>withRemovedByPlayerMoves(playerMoves)=>passedToTheNextPlayer(playerList)
     ]
 };
 
@@ -179,11 +176,11 @@ CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNot
     playerList = $.playerList;
     scoresByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->scoreByPlayer);
     puddingCountsByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->puddingsCountByPlayer);
-    puddingCountsByPlayer = ?noError(playerList->players->flipMap(^PlayerName => Result<Integer<0..>, MapItemNotFound> ::
-        {?noError(puddingCountsByRound->item(0)->item(#)) +
-        ?noError(puddingCountsByRound->item(1)->item(#))} +
-        ?noError(puddingCountsByRound->item(2)->item(#))
-    ));
+    puddingCountsByPlayer = playerList->players=>flipMap(^PlayerName => Result<Integer<0..>, MapItemNotFound> ::
+        {puddingCountsByRound->item(0)=>item(#) +
+        puddingCountsByRound->item(1)=>item(#)} +
+        puddingCountsByRound->item(2)=>item(#)
+    );
     minPuddings = puddingCountsByPlayer->values->min;
     maxPuddings = puddingCountsByPlayer->values->max;
     playersWithMinPuddings = puddingCountsByPlayer->filter(^Integer => Boolean :: # == minPuddings)->keys;
@@ -192,9 +189,9 @@ CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNot
     pointsForMaxPuddings = {-6 / playersWithMaxPuddings->length}->asInteger;
 
     playerList->players->flipMap(^PlayerName => Result<Integer, MapItemNotFound> ::
-        {{?noError(scoresByRound->item(0)->item(#)) +
-        ?noError(scoresByRound->item(1)->item(#))} +
-        ?noError(scoresByRound->item(2)->item(#))} +
+        {{scoresByRound->item(0)=>item(#) +
+        scoresByRound->item(1)=>item(#)} +
+        scoresByRound->item(2)=>item(#)} +
         {?whenIsTrue { playersWithMinPuddings->contains(#) : pointsForMinPuddings, ~: 0 } +
         ?whenIsTrue { playersWithMaxPuddings->contains(#) : pointsForMaxPuddings, ~: 0 }}
     )
@@ -206,10 +203,10 @@ SushiGoShuffledDeck->dealCards(^PlayerList => Result<PlayersCards, ItemNotFound>
     cardsPerPlayer = #->cardsPerPlayer;
     cardsToDeal = cardsPerPlayer * players->length;
 
-    cards = ?noError(players->flipMap(^PlayerName => Result<Array<SushiGoCard, 4..10>, ItemNotFound> ::
+    cards = players=>flipMap(^PlayerName => Result<Array<SushiGoCard, 4..10>, ItemNotFound> ::
         1->upTo(cardsPerPlayer)->map(
-            ^Integer => Result<SushiGoCard, ItemNotFound> :: ?noError(deck->POP))
-    ));
+            ^Integer => Result<SushiGoCard, ItemNotFound> :: deck=>POP)
+    );
     PlayersCards[cards: cards]
 };
 
@@ -230,13 +227,13 @@ testMove = ^Any => Any :: {
         Eve    : [SushiGoCard.Wasabi, SushiGoCard.NigiriEgg]
     ]];
     ar1 = ActiveRound[players, openCards, hiddenCards];
-    ar2 = ?noError(ar1->applyPlayerMoves[
+    ar2 = ar1=>applyPlayerMoves[
         Alice  : [chosenCard: SushiGoCard.MakiRoll2, chopsticksExchange: null],
         Bob    : [chosenCard: SushiGoCard.Sashimi, chopsticksExchange: null],
         Charlie: [chosenCard: SushiGoCard.Tempura, chopsticksExchange: SushiGoCard.Tempura],
         David  : [chosenCard: SushiGoCard.Wasabi, chopsticksExchange: null],
         Eve    : [chosenCard: SushiGoCard.NigiriSalmon, chopsticksExchange: null]
-    ]);
+    ];
     ar1->DUMPNL;
     ar2->DUMPNL
 };
@@ -245,9 +242,9 @@ myFn = ^Array<String> => Any :: {
     deck = SushiGoFullDeck(null)->shuffle;
     players = PlayerList[players: ['Alice', 'Bob', 'Charlie', 'David', 'Eve']];
     drawnCards = [
-        round1Cards = ?noError(deck->dealCards(players)),
-        ?noError(deck->dealCards(players)),
-        ?noError(deck->dealCards(players))
+        round1Cards = deck=>dealCards(players),
+        deck=>dealCards(players),
+        deck=>dealCards(players)
     ];
     c = CompletedGameRounds[playerList: players, cardsByRound: drawnCards, remainingDeck: deck];
     wasabi = SushiGoCard.Wasabi;
@@ -258,7 +255,7 @@ myFn = ^Array<String> => Any :: {
         cards: wasabi->numberOfCards
     ]->DUMPNL;
     [scoresByRoundAndPlayer: drawnCards->map(^PlayersCards => Map<Integer<0..>> :: #->scoreByPlayer)]->DUMPNL;
-    [totalScoreByPlayer: ?noError(c->totalScoreByPlayer)]->DUMPNL;
+    [totalScoreByPlayer: c=>totalScoreByPlayer]->DUMPNL;
     [remainingCards: deck]->DUMPNL;
     [
         drawnByRoundAndPlayer: drawnCards

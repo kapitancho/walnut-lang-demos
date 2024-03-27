@@ -76,7 +76,7 @@ ProductController = :[];
 ProductController->updateTitle(^UpdateProductTitleCommand => Any) %% UpdateProductTitleCommandHandler :: %(#);
 
 myFn = ^Array<String> => Any :: {
-    s = ?noError(DependencyContainer[]->valueOf(type{ProductStorage}));
+    s = DependencyContainer[]=>valueOf(type{ProductStorage});
     before = s->products->item('productId');
     x = ProductController[]->updateTitle([productId: 'productId', title: 'myNewTitle']);
     after = s->products->item('productId');

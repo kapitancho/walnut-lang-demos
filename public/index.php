@@ -1,5 +1,6 @@
 <?php
 
+use Walnut\Lang\Blueprint\Execution\AnalyserException;
 use Walnut\Lang\Blueprint\NativeCode\NativeCodeContext;
 use Walnut\Lang\Implementation\Compilation\WalexLexerAdapter;
 use Walnut\Lang\Implementation\Compilation\ParserException;
@@ -22,6 +23,30 @@ $sourceRoot = __DIR__ . '/../walnut-src';
 foreach(glob("$sourceRoot/*.nut") as $sourceFile) {
 	$sources[] = str_replace('.nut', '', basename($sourceFile));
 }
+
+if ($_GET['check'] ?? null === 'all') {
+	$lexer = new WalexLexerAdapter();
+	$logger = new TransitionLogger();
+	echo '<pre>';
+	foreach($sources as $source) {
+		$sourceCode = file_get_contents("$sourceRoot/$source.nut");
+		$tokens = $lexer->tokensFromSource($sourceCode);
+		$pb = ($pbf = new ProgramBuilderFactory())->getProgramBuilder();
+		$moduleImporter = new Walnut\Lang\Implementation\Compilation\ModuleImporter($sourceRoot, $pb, $logger);
+		$parser = new Walnut\Lang\Implementation\Compilation\Parser($pb, $logger, $moduleImporter);
+		try {
+			$m = $parser->programFromTokens($tokens);
+			$pb->build()->analyse();
+			echo "OK: $source\n";
+		} catch (AnalyserException $e) {
+			echo "Analyse error in $source: {$e->getMessage()}\n";
+		} catch (ParserException $e) {
+			echo "Parse error in $source: {$e->getMessage()}\n";
+		}
+	}
+	die;
+}
+
 if (!in_array($source, $sources, true)) {
 	$source = 'cast10';
 }

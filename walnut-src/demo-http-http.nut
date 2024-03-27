@@ -4,8 +4,8 @@ TemplateHandler = :[];
 TemplateHandler ==> HttpRequestHandler %% [~CreateHttpResponse, ~TemplateService] :: {
     ^[request: HttpRequest] => Result<HttpResponse, Any> :: {
         getSurveyTemplateIdFromRequest = ^HttpRequest => Result<SurveyTemplateId, Any> :: {
-            templateId = ?noError({#.requestTarget->substringRange[start: 1, end: 9999]}->asInteger)->as(type{JsonValue});
-            ?noError(templateId->hydrateAs(type{SurveyTemplateId}))
+            templateId = {#.requestTarget->substringRange[start: 1, end: 9999]}=>asInteger->as(type{JsonValue});
+            templateId=>hydrateAs(type{SurveyTemplateId})
         };
         getSurveyDetailsFromRequest = ^HttpRequest => Result<SurveyDetails, Any> :: {
             requestBody = #.body;

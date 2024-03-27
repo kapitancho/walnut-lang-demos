@@ -6,8 +6,8 @@ CompositeHandler ==> HttpRequestHandler :: {
     ^[request: HttpRequest] => Result<HttpResponse, Any> :: {
         ?whenTypeOf($.middlewares) is {
             type{Array<1..>}: {
-                m = ?noError($.middlewares->withoutFirst);
-                m.element[#.request, ?noError({CompositeHandler[$.defaultHandler, m.array]}->as(type{HttpRequestHandler}))]
+                m = $.middlewares=>withoutFirst;
+                m.element[#.request, {CompositeHandler[$.defaultHandler, m.array]}=>as(type{HttpRequestHandler})]
             },
             ~: $.defaultHandler[#.request]
         }
@@ -76,7 +76,7 @@ LookupRouter = $[routerMapping: LookupRouterMapping];
 LookupRouter ==> HttpMiddleware %% DependencyContainer :: {
     run = ^[request: HttpRequest, type: Type] => Result<HttpResponse, Any> :: {
         handler = %->valueOf(#.type);
-        rh = ?noError(handler->as(type{HttpRequestHandler}));
+        rh = handler=>as(type{HttpRequestHandler});
         rh[#.request]
     };
 

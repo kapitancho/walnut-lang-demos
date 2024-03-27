@@ -107,7 +107,7 @@ myFn = ^Array<String> => Any :: {
         tu4: hydrateAs[[3.14, 2], type{RealRealIntTuple}],
         tu5: hydrateAs[[a: 3.14, b: 2], type{RealRealIntTuple}],
 
-        tu6: hydrateAs[[3.14, 2, -100], type{[Real, Real, Integer]}],
+        tu6: hydrateAs[[3.14, 2, -100], type[Real, Real, Integer]],
 
         re1: hydrateAs[[a: 3.14, b: 2, c: -100], type{RealRealIntRecord}],
         re2: hydrateAs[[a: 3.14, b: 2, c: 3.14], type{RealRealIntRecord}],
@@ -115,7 +115,7 @@ myFn = ^Array<String> => Any :: {
         re4: hydrateAs[[a: 3.14, b: 2], type{RealRealIntRecord}],
         re5: hydrateAs[[3.14, 2], type{RealRealIntRecord}],
 
-        re6: hydrateAs[[a: 3.14, b: 2, c: -100], type{[a: Real, b: Real, c: Integer]}],
+        re6: hydrateAs[[a: 3.14, b: 2, c: -100], type[a: Real, b: Real, c: Integer]],
 
         mu1: hydrateAs[15, type{MutableInteger}],
         mu2: hydrateAs[15, type{Mutable<Integer>}],
