@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=8.2",
-        "kapitancho/walnut-lang-cli-adapter": "^0.0.5",
-        "kapitancho/walnut-lang-psr-http-adapter": "^0.0.5"
+        "kapitancho/walnut-lang-cli-adapter": "^0.0.6",
+        "kapitancho/walnut-lang-psr-http-adapter": "^0.0.6"
 	}
 }

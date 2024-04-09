@@ -7,6 +7,7 @@ use Walnut\Lang\Implementation\Compilation\ParserException;
 use Walnut\Lang\Implementation\Compilation\TransitionLogger;
 use Walnut\Lang\Implementation\Registry\ProgramBuilderFactory;
 use Walnut\Lang\NativeConnector\Cli\Implementation\CliAdapter;
+use Walnut\Lib\Walex\SpecialRuleTag;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -88,7 +89,8 @@ try {
 	echo htmlspecialchars("Error: {$e->getMessage()}\n");
 
 	foreach(array_reverse(array_slice($tokens, 0, $e->state->i)) as $token) {
-		$sourceCode = substr_replace($sourceCode, '<strong title="' . $token->rule->tag . '">' .
+		$sourceCode = substr_replace($sourceCode, '<strong title="' .
+			($token->rule->tag instanceof SpecialRuleTag ? $token->rule->tag->name : $token->rule->tag) . '">' .
 			htmlspecialchars($token->patternMatch->text) . '</strong>', $token->sourcePosition->offset, strlen($token->patternMatch->text));
 	}
 	if (!$isRun) {

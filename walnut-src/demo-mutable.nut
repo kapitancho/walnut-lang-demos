@@ -4,9 +4,9 @@ pop = ^Mutable<Array<Integer>> => Result<Integer, ItemNotFound> :: #->POP;
 shift = ^Mutable<Array<Integer>> => Result<Integer, ItemNotFound> :: #->SHIFT;
 
 myFn = ^Array<String> => Any :: {
-    a = Mutable[type{Integer}, 25];
+    a = mutable{Integer, 25};
     b = Mutable[type{Array<Integer>}, [1, 3, 5]];
-    c = Mutable[type{Array<Integer>}, [1, 3, 5]];
+    c = mutable{Array<Integer>, [1, 3, a->value]};
     [
         valueBeforeSet: a->value,
         SET: a->SET(10),

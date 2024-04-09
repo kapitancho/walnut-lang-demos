@@ -12,9 +12,9 @@ calculateIsbnChecksum = ^[isbn: String<10..10>] => Result<Integer, NotANumber> :
 Isbn <: String @ InvalidIsbn|NotANumber :: {
     checksum = ?noError(?whenTypeOf(#) is {
         type{String<10..10>}: calculateIsbnChecksum[#],
-        ~: => Error(InvalidIsbn[#])
+        ~: => @InvalidIsbn[#]
     });
-    ?whenIsTrue { checksum % 11: Error(InvalidIsbn[#]), ~: null }
+    ?whenIsTrue { checksum % 11: @InvalidIsbn[#], ~: null }
 };
 UnknownBook = $[~Isbn];
 BookTitle <: String<1..200>;
@@ -38,7 +38,7 @@ Library->books(^Null => Mutable<Map<Book>>) :: $.books;
 DependencyContainer ==> BookByIsbn %% Library :: ^Isbn => Result<Book, UnknownBook> :: {
     book = {%->books->value}->item(#->baseValue);
     ?whenTypeOf(book) is {
-        type{Result<Nothing, MapItemNotFound>}: Error(UnknownBook[#]),
+        type{Result<Nothing, MapItemNotFound>}: @UnknownBook[#],
         type{Book}: book
     }
 };
@@ -57,13 +57,13 @@ DependencyContainer ==> BringBookToLibrary %% Library :: ^Book => BookAdded|Book
 DependencyContainer ==> RemoveBookFromLibrary %% Library :: ^Book => Result<BookRemoved, UnknownBook> :: {
     book = {%->books->value}->item(#.isbn->baseValue);
     result = ?whenTypeOf(book) is {
-        type{Result<Nothing, MapItemNotFound>}: => Error(UnknownBook[#.isbn]),
+        type{Result<Nothing, MapItemNotFound>}: => @UnknownBook[#.isbn],
         ~: BookRemoved[#]
     };
     newState = %->books->value->valuesWithoutKey(#.isbn->baseValue);
     ?whenTypeOf(newState) is {
         type{Map<Book>}: {%->books}->SET(newState),
-        ~: => Error(UnknownBook[#.isbn])
+        ~: => @UnknownBook[#.isbn]
     };
     result
 };
